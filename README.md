@@ -1,6 +1,10 @@
 # Executor
 Fast execute task with python and less mem ops
 
+## Installation
+```bash
+pip install thread-executor
+```
 
 ## Why we need Thread Executor?
 
@@ -28,13 +32,6 @@ This's my resolver.
 - If queue is full you need to wait for available queue slot. set `max_queue_size=0` to avoid this.
 - If you restart your app, all the `Job in Queue` that have not been processed will be `lost`.
 
-## Installtion
-
-Now it's time you can install lib and experience
-
-```bash
-pip install thread-executor
-```
 
 ## Usage : Interface list
 ```python
