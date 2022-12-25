@@ -37,108 +37,56 @@ pip install thread-executor
 ```
 
 ## Usage : Interface list
-```go
-type ISafeQueue interface {
-	Info() SafeQueueInfo // engine info
-	Close() error // close all anything
-	RescaleUp(numWorker uint) // increase worker
-	RescaleDown(numWorker uint) error // reduce worker
-	Run() // start
-	Send(jobs ...*Job) error // push job to hub
-	Wait() // keep block thread
-	Done() // Immediate stop wait
-}
+```python3
+send(job: Job) -> None # Push a job to the queue
+wait() -> None # wait for all jobs to be completed without blocking each other
+scale_up(number_threads: int) -> None # scale up number of threads
+scale_down(self, number_threads: int) -> None # scale down number of threads
 ```
 
 ### Initial
-```go
-    engine = CreateSafeQueue(&SafeQueueConfig{
-        NumberWorkers: 3,
-        Capacity: 500,
-        WaitGroup: &sync.WaitGroup{},
-    })
-    defer engine.Close() // flush engine
+```python3
+from executor.safe_queue import Executor, Job
 
-    // go engine.Wait() // folk to other thread
-    engine.Wait() // block current thread
+engine = Executor(number_threads=10, max_queue_size=0)
 ```
 ### Send Simple Job
-```go
-    // simple job
-    j := &Job{
-        Exectutor: func(in ...interface{}) {
-            // any thing
-        },
-        Params: []interface{1, "abc"}
-    }
-    engine.Send(j)
-    // send mutiple job
-    jobs := []*Job{
-        {
-             Exectutor: func(in ...interface{}) {
-            // any thing
-        },
-        Params: []interface{1, "abc"}
-        },
-         Exectutor: func(in ...interface{}) {
-            // any thing
-        },
-        Params: []interface{2, "abc"}
-    }
-    engine.Send(jobs...)
+```python
+import time
+
+def test_exec(*args, **kwargs):
+    time.sleep(3)
+    print(args)
+    return [1, 2, 3]
+
+
+def test_exec1(*args, **kwargs):
+    print(kwargs)
+    time.sleep(2)
+    return {"a": 1, "b": 2, "c": 3}
+
+engine.send(Job(func=test_exec, args=(1, 2), kwargs={}, callback=None, block=False))
+engine.send(Job(func=test_exec1, args=(), kwargs={"time": 1}, callback=None, block=False))
+engine.send(Job(func=test_exec1, args=(), kwargs={}, callback=None, block=False))
+engine.send(Job(func=test_exec1, args=(), kwargs={}, callback=None, block=False))
+engine.send(Job(func=test_exec1, args=(), kwargs={}, callback=None, block=False))
+engine.wait()
 ```
 
-### Send Job complicated
-```go
-    // wait for job completed
-    j := &Job{
-        Exectutor: func(in ...interface{}) {
-            // any thing
-        },
-        Params: []interface{1, "abc"},
-        Wg: &sync.WaitGroup{},
-    }
-    engine.Send(j)
-    // wait for job run success
-    j.Wait()
-
-    // callback handle async
-    // you can sync when use with waitgroup
-    j := &Job{
-        Exectutor: func(in ...interface{}) {
-            // any thing
-        },
-        CallBack: func(out interface{}, err error) {
-            // try some thing here
-        }
-        Params: []interface{1, "abc"}
-    }
-    engine.Send(j)
+### Send Job with callback
+```python3
+def call_back(result):
+    print(result)
+    
+for i in range(5):
+    engine.send(Job(func=test_exec1, args=(), kwargs={"time": 1}, callback=call_back, block=False))
+engine.wait()
 ```
 
 
-### Send Job with groups
-```go
-    // prepaire a group job.
-	group1 := make([]*Job, 0)
-	for i := 0; i < 10; i++ {
-		group1 = append(group1, &Job{
-            Exectutor: func(in ...interface{}) {
-                // any thing
-            },
-            Params: []interface{1, "abc"},
-            Wg: &sync.WaitGroup{},
-        })
-	}
-    // wait for job completed
-	engine.SendWithGroup(group1...)
+### Thread scale up/down
 
-    engine.Wait()
-```
-
-### safequeue scale up/down
-
-```go
-    engine.ScaleUp(5)
-    engine.ScaleDown(2)
+```python3
+engine.scale_up(3)
+engine.scale_down(3)
 ```
