@@ -10,7 +10,7 @@ packages = [
 ]
 readme = "README.md"
 homepage = "https://pypi.org/project/thread-executor"
-#repository = "https://github.com/HKer-MuCoi/pielock"
+repository = "https://github.com/HKer-MuCoi/executor"
 keywords = ["multi thread", "threading", "concurency", "worker pool"]
 
 [tool.poetry.dependencies]
