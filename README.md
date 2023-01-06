@@ -35,7 +35,7 @@ This's my resolver.
 - Your app doesn't need to create and release threads continuously
 - Easy to access and use when coding.
 
-## Disadvance?
+## Disadvantage?
 
 - If you use `callback` then remembered to `add try catch` to handle thread leaked.
 - If queue is full you need to wait for available queue slot. set `max_queue_size=0` to avoid this.
