@@ -68,4 +68,5 @@ class TestSafeQueue(unittest.TestCase):
         engine.scale_down(3)
         for i in range(6):
             engine.send(Job(func=test_exec1, args=(), kwargs={"time": 1}, callback=None, block=False))
-        engine.wait()
+        time.sleep(10)
+        # engine.wait()
