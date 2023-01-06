@@ -1,7 +1,7 @@
 # Executor
 
 <p align="center">
-    <em>Fast execute task with python and less mem ops</em>
+    <em>Fast execute task with python threading and efficient mem ops</em>
 </p>
 <a href="https://pypi.org/project/thread-executor" target="_blank">
     <img src="https://img.shields.io/pypi/v/fastapi?color=%2334D058&label=pypi%20package" alt="Package version">
@@ -15,15 +15,15 @@
 pip install thread-executor
 ```
 
-## Why we need Thread Executor?
+## Why do we need Thread Executor?
 
-Python threading module is a good structure, it helps developers to folk a thread to run some background tasks.
+Python threading module is a great structure, it helps developers to folk a thread to run some background tasks.
 Python have Queue mechanism to connect thread's data.
-So what is the problem??
+But, what is the problem??
 
-- First, threading module folk threads but python not commit late time. Knowing your thread will run, but don't know when? It's fast with small traffic but when server is high load you will have some problem, high pressure on memory because creating too many threads cause slowness. `waste of time`
+- First, threading module create threads but number of threads that can be created is depended on the hardware. So there is a limit number of threads that can be created. It's fast and lightweight with small traffic but when server is high load you will have some problem, high pressure on memory because you can't create too many threads. `can't create more threads`
 
-- Second, when you create and release threads many times, it'll increase memory and CPUs time of system. Sometime, developers did not handle exceptions and release thread. It can put more pressure to the application. `waste of resource`
+- Second, when you create and release threads many times, it'll increase memory and CPUs time of system. Sometime, developers did not handle exceptions and release thread cause `thread leak`(memory leak). It can put more pressure on the application. `waste of resource`
 
 ## How to resolve problem??
 
